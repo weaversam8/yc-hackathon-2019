@@ -65,13 +65,22 @@ def all_sentences(tree, arr):
 
     return arr
 
+def generate_report(sentences):
+    with open('./report.html', 'w') as report:
+        report.write("<html>\n<head>\n<style>html, body {font-family:sans-serif;} .s { margin: 2em; }</style>\n</head>\n<body>\n")
+        report.write("<h1>Sentence Report</h1>\n")
+        for sentence in sentences:
+            report.write("  <div class='s'>" + sentence + "</div>\n")
+        report.write("</body>\n</html>\n")
+    
+    print("report generated")
 
 with open('./policies/text/facebook.yaml') as file:
     # load the file as one continuous bit of memory
     content = "\n".join(file.readlines())
 
     # parse it into YAML and concat adjacent strings in lists
-    tree = compact_arrays(yaml.load(content))
+    tree = compact_arrays(yaml.load(content, Loader=yaml.FullLoader))
 
     # separate single strings into lists of sentences
     tree = sentence_parse(tree)
@@ -79,14 +88,5 @@ with open('./policies/text/facebook.yaml') as file:
     # get a list of all the sentences
     sentences = all_sentences(tree, list())
 
-    print(json.dumps(sentences))
-    exit()
-
-    # split the file into sentences
-    sentences = sent_tokenize(content)
-
-    # replace every consecutive whitespace character with a single space, cleans it up
-    # `list` is needed here because `map` creates a generator :rolling_eyes:
-    sentences = list(map(lambda s: re.sub(r'\s+', ' ', s), sentences))
-
-    print(sentences)
+    # generate an HTML report
+    generate_report(sentences)
