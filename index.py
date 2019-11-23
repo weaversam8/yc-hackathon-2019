@@ -29,11 +29,33 @@ def compact_arrays(tree):
     
     return tree
 
+# splits strings in the dict into lists of sentences
+def sentence_parse(tree):
+    if isinstance(tree, dict):
+        new_tree = {k: sentence_parse(v) for k, v in tree.items()}
+        return new_tree
+    
+    if isinstance(tree, list):
+        new_tree = []
+        for item in tree:
+            if isinstance(item, str):
+                # if we're handling just a string, tokenize it by sentence via NLTK
+                new_tree += sent_tokenize(item)
+            else:
+                new_tree.append(sentence_parse(item))
+        return new_tree
+    
+    return tree
+
 with open('./policies/text/facebook.yaml') as file:
     # load the file as one continuous bit of memory
     content = "\n".join(file.readlines())
 
+    # parse it into YAML and concat adjacent strings in lists
     tree = compact_arrays(yaml.load(content))
+
+    # separate single strings into lists of sentences
+    tree = sentence_parse(tree)
 
     print(json.dumps(tree))
     exit()
