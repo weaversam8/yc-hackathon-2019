@@ -175,19 +175,12 @@ with open('./policies/text/facebook.yaml') as file:
     
     plantuml = "@startuml\n\n"
 
-    added_actors = set()
-    added_relations = set()
+    added_relations = dict()
 
     for tree in list_of_statements:
 
         words = tree.pos()
         actor_name = words[0][0][0].lower()
-        last_node = "[" + actor_name + "]"
-        if actor_name not in added_actors:
-            plantuml += last_node + "\n"
-            added_actors.add(actor_name)
-        
-        plantuml += "\n"
 
         connection_label = ""
         
@@ -201,11 +194,17 @@ with open('./policies/text/facebook.yaml') as file:
         connection_label += verb
         
         noun = words[2][0][0]
-        relation = (last_node, connection_label, noun)
-        last_node = '() "'+noun+'"'
+        relation = (actor_name, noun)
+
         if relation not in added_relations:
-            plantuml += relation[0] + " --> " + last_node + " : " + connection_label + "\n"
-            added_relations.add(relation)
+            added_relations[relation] = set()
+
+        added_relations[relation].add("<&caret-right> " + connection_label)
+        
+
+    for relation, label in added_relations.items():
+        # print(label)
+        plantuml += ":" + relation[0] + ": --> (" + relation[1] + ") : " + "\\l".join(list(label)) + "\n"
         
     plantuml += "@enduml\n"
 

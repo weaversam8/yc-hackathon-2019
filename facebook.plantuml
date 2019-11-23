@@ -1,62 +1,18 @@
 @startuml
 
-[we]
-
-[we] --> () "information" : must process
-
-[we] --> () "things" : can do
-
-[we] --> () "information" : collect
-[you]
-
-[you] --> () "part" : are
-
-
-[you] --> () "features" : use
-
-
-
-[we] --> () "information" : use
-
-
-[we] --> () "cookies" : use
-
-[we] --> () "data" : receive
-
-
-
-[we] --> () "information" : connect
-
-[you] --> () "control" : will have
-
-[we] --> () "data" : use
-
-[we] --> () "information" : analyze
-
-[we] --> () "access" : can provide
-[they]
-
-[they] --> () "information" : can receive
-
-[we] --> () "developers" : will remove
-[them]
-
-[them] --> () "interactions" : understand
-
-[we] --> () "advertisers" : provide
-
-[we] --> () "information" : provide
-
-[we] --> () "information" : process
-
-[we] --> () "data" : store
-
-[we] --> () "things" : delete
-
-
-[we] --> () "changes" : make
-
-[you] --> () "questions" : have
-
-[we] --> () "disputes" : may resolve
+:we: --> (information) : <&caret-right> must process\l<&caret-right> provide\l<&caret-right> use\l<&caret-right> process\l<&caret-right> analyze\l<&caret-right> collect\l<&caret-right> connect
+:we: --> (things) : <&caret-right> delete\l<&caret-right> can do
+:you: --> (part) : <&caret-right> are
+:you: --> (features) : <&caret-right> use
+:we: --> (cookies) : <&caret-right> use
+:we: --> (data) : <&caret-right> store\l<&caret-right> use\l<&caret-right> receive
+:you: --> (control) : <&caret-right> will have
+:we: --> (access) : <&caret-right> can provide
+:they: --> (information) : <&caret-right> can receive
+:we: --> (developers) : <&caret-right> will remove
+:them: --> (interactions) : <&caret-right> understand
+:we: --> (advertisers) : <&caret-right> provide
+:we: --> (changes) : <&caret-right> make
+:you: --> (questions) : <&caret-right> have
+:we: --> (disputes) : <&caret-right> may resolve
 @enduml
