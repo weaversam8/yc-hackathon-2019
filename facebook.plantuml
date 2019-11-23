@@ -1,103 +1,62 @@
 @startuml
 
-:we:
+[we]
 
-:we: --> (must)
-(must) --> (process)
-(process) --> (information)
+[we] --> () "information" : must process
 
-(information) --> (can)
-(can) --> (do)
-(do) --> (things)
+[we] --> () "things" : can do
 
-(things) --> (collect)
-(collect) --> (information)
-:you:
+[we] --> () "information" : collect
+[you]
 
-:you: --> (are)
-(are) --> (part)
+[you] --> () "part" : are
 
-(part) --> (collect)
-(collect) --> (information)
 
-(information) --> (use)
-(use) --> (features)
+[you] --> () "features" : use
 
-(features) --> (collect)
-(collect) --> (information)
 
-(information) --> (collect)
-(collect) --> (information)
 
-(use) --> (information)
+[we] --> () "information" : use
 
-(do) --> (things)
 
-(things) --> (use)
-(use) --> (cookies)
+[we] --> () "cookies" : use
 
-(cookies) --> (receive)
-(receive) --> (data)
+[we] --> () "data" : receive
 
-(data) --> (use)
-(use) --> (cookies)
 
-(cookies) --> (use)
-(use) --> (information)
 
-(information) --> (connect)
-(connect) --> (information)
+[we] --> () "information" : connect
 
-(information) --> (will)
-(will) --> (have)
-(have) --> (control)
+[you] --> () "control" : will have
 
-(control) --> (use)
-(use) --> (data)
+[we] --> () "data" : use
 
-(data) --> (analyze)
-(analyze) --> (information)
+[we] --> () "information" : analyze
 
-(can) --> (provide)
-(provide) --> (access)
-:they:
+[we] --> () "access" : can provide
+[they]
 
-:they: --> (can)
-(can) --> (receive)
-(receive) --> (information)
+[they] --> () "information" : can receive
 
-(will) --> (remove)
-(remove) --> (developers)
-:them:
+[we] --> () "developers" : will remove
+[them]
 
-:them: --> (understand)
-(understand) --> (interactions)
+[them] --> () "interactions" : understand
 
-(interactions) --> (provide)
-(provide) --> (advertisers)
+[we] --> () "advertisers" : provide
 
-(advertisers) --> (provide)
-(provide) --> (information)
+[we] --> () "information" : provide
 
-(information) --> (process)
-(process) --> (information)
+[we] --> () "information" : process
 
-(information) --> (store)
-(store) --> (data)
+[we] --> () "data" : store
 
-(data) --> (delete)
-(delete) --> (things)
+[we] --> () "things" : delete
 
-(things) --> (provide)
-(provide) --> (information)
 
-(information) --> (make)
-(make) --> (changes)
+[we] --> () "changes" : make
 
-(changes) --> (have)
-(have) --> (questions)
+[you] --> () "questions" : have
 
-(questions) --> (may)
-(may) --> (resolve)
-(resolve) --> (disputes)
+[we] --> () "disputes" : may resolve
 @enduml

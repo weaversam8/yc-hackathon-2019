@@ -182,35 +182,30 @@ with open('./policies/text/facebook.yaml') as file:
 
         words = tree.pos()
         actor_name = words[0][0][0].lower()
+        last_node = "[" + actor_name + "]"
         if actor_name not in added_actors:
-            last_node = ":" + actor_name + ":"
             plantuml += last_node + "\n"
             added_actors.add(actor_name)
         
         plantuml += "\n"
+
+        connection_label = ""
         
         if len(words) > 3:
             md_word = words[1][0][0]
-            relation = (last_node, md_word)
-            last_node = "("+md_word+")"
-            if relation not in added_relations:
-                plantuml += relation[0] + " --> "+last_node+"\n"
-                added_relations.add(relation)
+            connection_label += md_word + ' '
             # pretend like the MD isn't even there
             del words[1]
         
         verb = words[1][0][0]
-        relation = (last_node, verb)
-        last_node = "(" + verb + ")"
-        if relation not in added_relations:
-            plantuml += relation[0] + " --> " + last_node+"\n"
-            added_relations.add(relation)
+        connection_label += verb
         
         noun = words[2][0][0]
-        relation = (last_node, noun)
-        last_node = "("+noun+")"
+        relation = (last_node, connection_label, noun)
+        last_node = '() "'+noun+'"'
         if relation not in added_relations:
-            plantuml += relation[0] + " --> " + last_node + "\n"
+            plantuml += relation[0] + " --> " + last_node + " : " + connection_label + "\n"
+            added_relations.add(relation)
         
     plantuml += "@enduml\n"
 
