@@ -47,6 +47,25 @@ def sentence_parse(tree):
     
     return tree
 
+# gets all sentences from the tree
+def all_sentences(tree, arr):
+    if isinstance(tree, dict):
+        for k, v in tree.items():
+            arr = all_sentences(v, arr)
+        return arr
+    
+    if isinstance(tree, list):
+        for item in tree:
+            arr = all_sentences(item, arr)
+        return arr
+
+    if isinstance(tree, str):
+        arr.append(tree)
+        return arr
+
+    return arr
+
+
 with open('./policies/text/facebook.yaml') as file:
     # load the file as one continuous bit of memory
     content = "\n".join(file.readlines())
@@ -57,7 +76,10 @@ with open('./policies/text/facebook.yaml') as file:
     # separate single strings into lists of sentences
     tree = sentence_parse(tree)
 
-    print(json.dumps(tree))
+    # get a list of all the sentences
+    sentences = all_sentences(tree, list())
+
+    print(json.dumps(sentences))
     exit()
 
     # split the file into sentences
