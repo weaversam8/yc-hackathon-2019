@@ -2,8 +2,9 @@ import re
 import yaml
 import json
 
-# import tokenizers
+# import tokenizers and wordnet
 from nltk.tokenize import sent_tokenize, word_tokenize
+from nltk.corpus import wordnet as wn
 
 # import stopwords
 from nltk.corpus import stopwords
@@ -86,14 +87,22 @@ def generate_report(sentences):
     
     print("report generated")
 
-def hide_stopwords(words):
-    list(map(lambda x: '<span class="stop">' + x + '</span>' if x.lower() in stop_words else x, words))
-    
-    return " ".join(words)
-
 def highlight(words, word, cls):
-    return list(map(lambda x: '<span class="'+cls+'">' + x + '</span>' if x.lower() == word else x, words))
+    return list(map(lambda x: ('<span class="'+cls+'">' + x[0], x[1], x[2] + '</span>') if x[1].lower() == word else x, words))
 
+def tag_wn(words):
+    return list(map(lambda x: ('<u>' + x[0], x[1], x[2] + '</u>') if len(wn.synsets(x[1].lower())) == 0 else ('<span title="'+ str(wn.synsets(x[1].lower())[0]) +'">' + x[0], x[1], x[2] + '</span>'), words))
+
+# splits each sentence not just into words but into lists of size 3
+# the beginning and end of the list are there to allow the highlight
+# functions to append without losing the original word
+def word_tokenize_extra(sentence):
+    words = word_tokenize(sentence)
+    return list(map(lambda w: ('', w, ''),  words))
+
+# see above, rejoins properly, concating the beginning and end
+def rejoin(sentence):
+    return " ".join(list(map(lambda s: "".join(s), sentence)))
 
 with open('./policies/text/facebook.yaml') as file:
     # load the file as one continuous bit of memory
@@ -108,16 +117,18 @@ with open('./policies/text/facebook.yaml') as file:
     # get a list of all the sentences
     sentences = all_sentences(tree, list())
 
-    sentences_tokenized = map(lambda s: word_tokenize(s), sentences)
+    # tokenize the sentences using my new tokenizer
+    sentences_tokenized = map(lambda s: word_tokenize_extra(s), sentences)
 
-    # deemphasize the stopwords from each
-    # sentences = map(lambda s: hide_stopwords(s), sentences)
-    
-    # highlight "we"
+    # highlight "we" and "you"
     sentences_tokenized = map(lambda s: highlight(s, "we", "we"), sentences_tokenized)
     sentences_tokenized = map(lambda s: highlight(s, "you", "you"), sentences_tokenized)
 
-    sentences = map(lambda s: " ".join(s), sentences_tokenized)
+    # underline any words that are not in WordNet and tag the synsets of those that are
+    sentences_tokenized = map(lambda s: tag_wn(s), sentences_tokenized)
+
+    # rejoin the sentences using my rejoiner function
+    sentences = map(lambda s: rejoin(s), sentences_tokenized)
 
     # generate an HTML report
     generate_report(sentences)
