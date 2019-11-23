@@ -1,10 +1,16 @@
 import re
 import yaml
 import json
+import sys
+from io import StringIO
 
 # import tokenizers and wordnet
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import wordnet as wn
+
+# import tagging stuff
+from nltk import pos_tag
+from nltk.help import upenn_tagset
 
 # import stopwords
 from nltk.corpus import stopwords
@@ -79,7 +85,7 @@ def all_sentences(tree, arr):
 
 def generate_report(sentences):
     with open('./report.html', 'w') as report:
-        report.write("<html>\n<head>\n<style>html, body {font-family:sans-serif;} .s { margin: 2em; } .we { color: #ff0000; font-weight: bold; } .you { color: #00cc33; font-weight: bold; } </style>\n</head>\n<body>\n")
+        report.write("<html>\n<head>\n<style>html, body {font-family:sans-serif;} sub { font-size: 0.5em; } .s { margin: 2em; } .we { color: #ff0000; font-weight: bold; } .you { color: #00cc33; font-weight: bold; } </style>\n</head>\n<body>\n")
         report.write("<h1>Sentence Report</h1>\n")
         for sentence in sentences:
             report.write("  <div class='s'>" + sentence + "</div>\n")
@@ -88,20 +94,34 @@ def generate_report(sentences):
     print("report generated")
 
 def highlight(words, word, cls):
-    return list(map(lambda x: ('<span class="'+cls+'">' + x[0], x[1], x[2] + '</span>') if x[1].lower() == word else x, words))
+    return list(map(lambda x: ('<span class="'+cls+'">' + x[0], x[1], x[2] + '</span>') if x[1][0].lower() == word else x, words))
 
 def tag_wn(words):
-    return list(map(lambda x: ('<u>' + x[0], x[1], x[2] + '</u>') if len(wn.synsets(x[1].lower())) == 0 else ('<span title="'+ str(wn.synsets(x[1].lower())[0]) +'">' + x[0], x[1], x[2] + '</span>'), words))
+    return list(map(lambda x: ('<u>' + x[0], x[1], x[2] + '</u>') if len(wn.synsets(x[1][0].lower())) == 0 else ('<span title="'+ str(wn.synsets(x[1][0].lower())[0]) +'">' + x[0], x[1], x[2] + '</span>'), words))
+
+def add_pos(words):
+    def get_help_tagset(tagset):
+        # https://stackoverflow.com/a/1218951/4196127
+        sys.stdout = StringIO()
+        upenn_tagset(tagset)
+        val = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+        return val
+
+    return list(map(lambda x: (x[0], x[1], x[2] + '<sub title="'+get_help_tagset(x[1][1]).split("\n")[0]+'">' + x[1][1] + '</sub>'), words))
 
 # splits each sentence not just into words but into lists of size 3
 # the beginning and end of the list are there to allow the highlight
 # functions to append without losing the original word
 def word_tokenize_extra(sentence):
     words = word_tokenize(sentence)
+    words = pos_tag(words)
     return list(map(lambda w: ('', w, ''),  words))
 
 # see above, rejoins properly, concating the beginning and end
 def rejoin(sentence):
+    # trim away the part of speech
+    sentence = map(lambda s: (s[0], s[1][0], s[2]), sentence)
     return " ".join(list(map(lambda s: "".join(s), sentence)))
 
 with open('./policies/text/facebook.yaml') as file:
@@ -126,6 +146,9 @@ with open('./policies/text/facebook.yaml') as file:
 
     # underline any words that are not in WordNet and tag the synsets of those that are
     sentences_tokenized = map(lambda s: tag_wn(s), sentences_tokenized)
+
+    # add the parts of speech
+    sentences_tokenized = map(lambda s: add_pos(s), sentences_tokenized)
 
     # rejoin the sentences using my rejoiner function
     sentences = map(lambda s: rejoin(s), sentences_tokenized)
