@@ -85,7 +85,7 @@ def all_sentences(tree, arr):
 
 def generate_report(sentences):
     with open('./report.html', 'w') as report:
-        report.write("<html>\n<head>\n<style>html, body {font-family:sans-serif;} sub { font-size: 0.5em; } .s { margin: 2em; } .we { color: #ff0000; font-weight: bold; } .you { color: #00cc33; font-weight: bold; } </style>\n</head>\n<body>\n")
+        report.write("<html>\n<head>\n<style>html, body {font-family:sans-serif;} sub { font-size: 0.5em; } .s { margin: 2em; } .we { color: #ff0000; font-weight: bold; } .you { color: #00cc33; font-weight: bold; } .noun { color: #0000ff; } .verb { color: #f08415; } </style>\n</head>\n<body>\n")
         report.write("<h1>Sentence Report</h1>\n")
         for sentence in sentences:
             report.write("  <div class='s'>" + sentence + "</div>\n")
@@ -95,6 +95,10 @@ def generate_report(sentences):
 
 def highlight(words, word, cls):
     return list(map(lambda x: ('<span class="'+cls+'">' + x[0], x[1], x[2] + '</span>') if x[1][0].lower() == word else x, words))
+
+def highlight_pos_arr(words, pos_arr, cls):
+    return list(map(lambda x: ('<span class="'+cls+'">' + x[0], x[1], x[2] + '</span>') if x[1][1] in pos_arr else x, words))
+
 
 def tag_wn(words):
     return list(map(lambda x: ('<u>' + x[0], x[1], x[2] + '</u>') if len(wn.synsets(x[1][0].lower())) == 0 else ('<span title="'+ str(wn.synsets(x[1][0].lower())[0]) +'">' + x[0], x[1], x[2] + '</span>'), words))
@@ -149,6 +153,10 @@ with open('./policies/text/facebook.yaml') as file:
 
     # add the parts of speech
     sentences_tokenized = map(lambda s: add_pos(s), sentences_tokenized)
+
+    # highlight nouns
+    sentences_tokenized = map(lambda s: highlight_pos_arr(s, ["NN", "NNS"], "noun"), sentences_tokenized)
+    sentences_tokenized = map(lambda s: highlight_pos_arr(s, ["VB", "VBP"], "verb"), sentences_tokenized)
 
     # rejoin the sentences using my rejoiner function
     sentences = map(lambda s: rejoin(s), sentences_tokenized)
