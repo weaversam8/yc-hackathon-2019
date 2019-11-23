@@ -71,8 +71,8 @@ cookies in the Facebook Cookies Policy and Instagram Cookies Policy.
 Information from partners.
 Advertisers, app developers, and publishers can send us information through Facebook Business Tools they use, including
 our social plug-ins (such as the Like button), Facebook Login, our APIs and SDKs, or the Facebook pixel. These partners
-provide information about your activities off Facebook—including information about your device, websites you visit,
-purchases you make, the ads you see, and how you use their services—whether or not you have a Facebook account or
+provide information about your activities off Facebook--including information about your device, websites you visit,
+purchases you make, the ads you see, and how you use their services--whether or not you have a Facebook account or
 are logged into Facebook. For example, a game developer could use our API to tell us what games you play, or a business
 could tell us about a purchase you made in its store. We also receive information about your online and offline actions and
 purchases from third-party data providers who have the rights to provide us with your information.
@@ -187,7 +187,7 @@ themselves). Information collected by these third-party services is subject to t
 Devices and operating systems providing native versions of Facebook and Instagram (i.e. where we have not developed our
 own first-party apps) will have access to all information you choose to share with them, including information your friends
 share with you, so they can provide our core functionality to you.
-Note: We are in the process of restricting developers’ data access even further to help prevent abuse. For example, we will
+Note: We are in the process of restricting developers' data access even further to help prevent abuse. For example, we will
 remove developers' access to your Facebook and Instagram data if you haven't used their app in 3 months, and we are
 
 changing Login, so that in the next version, we will reduce the data that an app can request without app review to include
@@ -299,14 +299,14 @@ Menlo Park, CA 94025
 
 Date of Last Revision: April 19, 2018
 
-English (US) Español Français (France) 中⽂(简体) ‫ ﺍﻟﻌﺭﺑﻳﺔ‬Português (Brasil) Italiano 한국어 Deutsch िह ी ⽇本語
+English (US) Espanol Francais (France) ??(??) ? ????????Portugues (Brasil) Italiano ??? Deutsch ?? ? ???
 Sign Up
 Local
 
 Log In
 Fundraisers
 
-Facebook © 2019
+Facebook (C) 2019
 
 Messenger
 Services
