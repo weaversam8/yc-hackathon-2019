@@ -7,6 +7,7 @@ YC Hackathon 2019.
 -   Run python 3
 -   Install `nltk` through `pip`
 -   Install `PyYAML` through `pip`
+-   Install `plantuml` through `pip`
 -   Run `python` and enter in the interactive prompt the following commands:
     -   `import nltk`
     -   `nltk.download('punkt')`

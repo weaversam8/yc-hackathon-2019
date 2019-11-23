@@ -1,0 +1,103 @@
+@startuml
+
+:we:
+
+:we: --> (must)
+(must) --> (process)
+(process) --> (information)
+
+(information) --> (can)
+(can) --> (do)
+(do) --> (things)
+
+(things) --> (collect)
+(collect) --> (information)
+:you:
+
+:you: --> (are)
+(are) --> (part)
+
+(part) --> (collect)
+(collect) --> (information)
+
+(information) --> (use)
+(use) --> (features)
+
+(features) --> (collect)
+(collect) --> (information)
+
+(information) --> (collect)
+(collect) --> (information)
+
+(use) --> (information)
+
+(do) --> (things)
+
+(things) --> (use)
+(use) --> (cookies)
+
+(cookies) --> (receive)
+(receive) --> (data)
+
+(data) --> (use)
+(use) --> (cookies)
+
+(cookies) --> (use)
+(use) --> (information)
+
+(information) --> (connect)
+(connect) --> (information)
+
+(information) --> (will)
+(will) --> (have)
+(have) --> (control)
+
+(control) --> (use)
+(use) --> (data)
+
+(data) --> (analyze)
+(analyze) --> (information)
+
+(can) --> (provide)
+(provide) --> (access)
+:they:
+
+:they: --> (can)
+(can) --> (receive)
+(receive) --> (information)
+
+(will) --> (remove)
+(remove) --> (developers)
+:them:
+
+:them: --> (understand)
+(understand) --> (interactions)
+
+(interactions) --> (provide)
+(provide) --> (advertisers)
+
+(advertisers) --> (provide)
+(provide) --> (information)
+
+(information) --> (process)
+(process) --> (information)
+
+(information) --> (store)
+(store) --> (data)
+
+(data) --> (delete)
+(delete) --> (things)
+
+(things) --> (provide)
+(provide) --> (information)
+
+(information) --> (make)
+(make) --> (changes)
+
+(changes) --> (have)
+(have) --> (questions)
+
+(questions) --> (may)
+(may) --> (resolve)
+(resolve) --> (disputes)
+@enduml

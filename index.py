@@ -13,14 +13,9 @@ from nltk import pos_tag
 from nltk.help import upenn_tagset
 from nltk import RegexpParser as NLTKRegexpParser
 
-# import stopwords
-from nltk.corpus import stopwords
-stop_words = set(stopwords.words('english'))
-stop_words.remove("you")
-stop_words.remove("we")
-stop_words.remove("and")
-stop_words.remove("of")
-stop_words.remove("about")
+# import plantuml
+from plantuml import PlantUML
+planty = PlantUML(url='http://www.plantuml.com/plantuml/img/')
 
 # merges adjacent text nodes into one text node in a nested object
 # really annoying and please don't mess with it
@@ -177,8 +172,53 @@ with open('./policies/text/facebook.yaml') as file:
         for subtree in result.subtrees():
             if subtree.label() == 'STATEMENT':
                 list_of_statements.append(subtree)
+    
+    plantuml = "@startuml\n\n"
 
-    print(list_of_statements)
+    added_actors = set()
+    added_relations = set()
+
+    for tree in list_of_statements:
+
+        words = tree.pos()
+        actor_name = words[0][0][0].lower()
+        if actor_name not in added_actors:
+            last_node = ":" + actor_name + ":"
+            plantuml += last_node + "\n"
+            added_actors.add(actor_name)
+        
+        plantuml += "\n"
+        
+        if len(words) > 3:
+            md_word = words[1][0][0]
+            relation = (last_node, md_word)
+            last_node = "("+md_word+")"
+            if relation not in added_relations:
+                plantuml += relation[0] + " --> "+last_node+"\n"
+                added_relations.add(relation)
+            # pretend like the MD isn't even there
+            del words[1]
+        
+        verb = words[1][0][0]
+        relation = (last_node, verb)
+        last_node = "(" + verb + ")"
+        if relation not in added_relations:
+            plantuml += relation[0] + " --> " + last_node+"\n"
+            added_relations.add(relation)
+        
+        noun = words[2][0][0]
+        relation = (last_node, noun)
+        last_node = "("+noun+")"
+        if relation not in added_relations:
+            plantuml += relation[0] + " --> " + last_node + "\n"
+        
+    plantuml += "@enduml\n"
+
+    print(planty.get_url(plantuml))
+
+    with open('./facebook.plantuml', 'w') as planty_output:
+        planty_output.write(plantuml)
+        print("plantuml output saved")
 
     # rejoin the sentences using my rejoiner function
     sentences = map(lambda s: rejoin(s), sentences_tokenized)
