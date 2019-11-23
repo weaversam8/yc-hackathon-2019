@@ -8,6 +8,11 @@ from nltk.tokenize import sent_tokenize, word_tokenize
 # import stopwords
 from nltk.corpus import stopwords
 stop_words = set(stopwords.words('english'))
+stop_words.remove("you")
+stop_words.remove("we")
+stop_words.remove("and")
+stop_words.remove("of")
+stop_words.remove("about")
 
 # merges adjacent text nodes into one text node in a nested object
 # really annoying and please don't mess with it
@@ -73,7 +78,7 @@ def all_sentences(tree, arr):
 
 def generate_report(sentences):
     with open('./report.html', 'w') as report:
-        report.write("<html>\n<head>\n<style>html, body {font-family:sans-serif;} .s { margin: 2em; } .stop { color: #aaaaaa; }</style>\n</head>\n<body>\n")
+        report.write("<html>\n<head>\n<style>html, body {font-family:sans-serif;} .s { margin: 2em; } .we { color: #ff0000; font-weight: bold; } .you { color: #00cc33; font-weight: bold; } </style>\n</head>\n<body>\n")
         report.write("<h1>Sentence Report</h1>\n")
         for sentence in sentences:
             report.write("  <div class='s'>" + sentence + "</div>\n")
@@ -81,11 +86,14 @@ def generate_report(sentences):
     
     print("report generated")
 
-def hide_stopwords(sentence):
-    words = word_tokenize(sentence)
-    words = list(map(lambda x: '<span class="stop">' + x + '</span>' if x in stop_words else x, words))
+def hide_stopwords(words):
+    list(map(lambda x: '<span class="stop">' + x + '</span>' if x.lower() in stop_words else x, words))
     
     return " ".join(words)
+
+def highlight(words, word, cls):
+    return list(map(lambda x: '<span class="'+cls+'">' + x + '</span>' if x.lower() == word else x, words))
+
 
 with open('./policies/text/facebook.yaml') as file:
     # load the file as one continuous bit of memory
@@ -100,8 +108,16 @@ with open('./policies/text/facebook.yaml') as file:
     # get a list of all the sentences
     sentences = all_sentences(tree, list())
 
+    sentences_tokenized = map(lambda s: word_tokenize(s), sentences)
+
     # deemphasize the stopwords from each
-    sentences = map(lambda s: hide_stopwords(s), sentences)
+    # sentences = map(lambda s: hide_stopwords(s), sentences)
+    
+    # highlight "we"
+    sentences_tokenized = map(lambda s: highlight(s, "we", "we"), sentences_tokenized)
+    sentences_tokenized = map(lambda s: highlight(s, "you", "you"), sentences_tokenized)
+
+    sentences = map(lambda s: " ".join(s), sentences_tokenized)
 
     # generate an HTML report
     generate_report(sentences)
