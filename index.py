@@ -11,6 +11,7 @@ from nltk.corpus import wordnet as wn
 # import tagging stuff
 from nltk import pos_tag
 from nltk.help import upenn_tagset
+from nltk import RegexpParser as NLTKRegexpParser
 
 # import stopwords
 from nltk.corpus import stopwords
@@ -128,6 +129,10 @@ def rejoin(sentence):
     sentence = map(lambda s: (s[0], s[1][0], s[2]), sentence)
     return " ".join(list(map(lambda s: "".join(s), sentence)))
 
+# extract the word and POS from the 3-tuple
+def extract_sentence_tuples(sentence):
+    return list(map(lambda s: s[1], sentence))
+
 with open('./policies/text/facebook.yaml') as file:
     # load the file as one continuous bit of memory
     content = "\n".join(file.readlines())
@@ -156,7 +161,24 @@ with open('./policies/text/facebook.yaml') as file:
 
     # highlight nouns
     sentences_tokenized = map(lambda s: highlight_pos_arr(s, ["NN", "NNS"], "noun"), sentences_tokenized)
-    sentences_tokenized = map(lambda s: highlight_pos_arr(s, ["VB", "VBP"], "verb"), sentences_tokenized)
+    sentences_tokenized = map(lambda s: highlight_pos_arr(s, ["VB", "VBP", "MD"], "verb"), sentences_tokenized)
+
+    grammar = r"""
+  STATEMENT: {<PRP><MD>?<VB|VBP><NN|NNS>}
+"""
+
+    parser = NLTKRegexpParser(grammar)
+    test_sentences = map(lambda s: extract_sentence_tuples(s), sentences_tokenized)
+    parsed_results = map(lambda s: parser.parse(s), test_sentences)
+
+    list_of_statements = list()
+
+    for result in parsed_results:
+        for subtree in result.subtrees():
+            if subtree.label() == 'STATEMENT':
+                list_of_statements.append(subtree)
+
+    print(list_of_statements)
 
     # rejoin the sentences using my rejoiner function
     sentences = map(lambda s: rejoin(s), sentences_tokenized)
