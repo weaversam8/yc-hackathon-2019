@@ -173,7 +173,8 @@ with open('./policies/text/facebook.yaml') as file:
             if subtree.label() == 'STATEMENT':
                 list_of_statements.append(subtree)
     
-    plantuml = "@startuml\n\n"
+    plantuml = "digraph G {\n"
+    plantuml += "  rankdir=LR;"
 
     added_actors = set()
     added_relations = set()
@@ -182,12 +183,12 @@ with open('./policies/text/facebook.yaml') as file:
 
         words = tree.pos()
         actor_name = words[0][0][0].lower()
-        last_node = "[" + actor_name + "]"
+        last_node = actor_name
         if actor_name not in added_actors:
-            plantuml += last_node + "\n"
+            # plantuml += last_node + "\n"
             added_actors.add(actor_name)
         
-        plantuml += "\n"
+        # plantuml += "\n"
 
         connection_label = ""
         
@@ -202,18 +203,18 @@ with open('./policies/text/facebook.yaml') as file:
         
         noun = words[2][0][0]
         relation = (last_node, connection_label, noun)
-        last_node = '() "'+noun+'"'
+        last_node = noun
         if relation not in added_relations:
-            plantuml += relation[0] + " --> " + last_node + " : " + connection_label + "\n"
+            plantuml += '  ' + relation[0] + "->" + last_node + " [ label = \"" + connection_label + "\" ];\n"
             added_relations.add(relation)
         
-    plantuml += "@enduml\n"
+    plantuml += "}\n"
 
-    print(planty.get_url(plantuml))
+    # print(planty.get_url(plantuml))
 
-    with open('./facebook.plantuml', 'w') as planty_output:
+    with open('./facebook.gv', 'w') as planty_output:
         planty_output.write(plantuml)
-        print("plantuml output saved")
+        print("graphvis output saved")
 
     # rejoin the sentences using my rejoiner function
     sentences = map(lambda s: rejoin(s), sentences_tokenized)
