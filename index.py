@@ -1,7 +1,13 @@
 import re
 import yaml
 import json
-from nltk.tokenize import sent_tokenize
+
+# import tokenizers
+from nltk.tokenize import sent_tokenize, word_tokenize
+
+# import stopwords
+from nltk.corpus import stopwords
+stop_words = set(stopwords.words('english'))
 
 # merges adjacent text nodes into one text node in a nested object
 # really annoying and please don't mess with it
@@ -67,13 +73,19 @@ def all_sentences(tree, arr):
 
 def generate_report(sentences):
     with open('./report.html', 'w') as report:
-        report.write("<html>\n<head>\n<style>html, body {font-family:sans-serif;} .s { margin: 2em; }</style>\n</head>\n<body>\n")
+        report.write("<html>\n<head>\n<style>html, body {font-family:sans-serif;} .s { margin: 2em; } .stop { color: #aaaaaa; }</style>\n</head>\n<body>\n")
         report.write("<h1>Sentence Report</h1>\n")
         for sentence in sentences:
             report.write("  <div class='s'>" + sentence + "</div>\n")
         report.write("</body>\n</html>\n")
     
     print("report generated")
+
+def hide_stopwords(sentence):
+    words = word_tokenize(sentence)
+    words = list(map(lambda x: '<span class="stop">' + x + '</span>' if x in stop_words else x, words))
+    
+    return " ".join(words)
 
 with open('./policies/text/facebook.yaml') as file:
     # load the file as one continuous bit of memory
@@ -87,6 +99,9 @@ with open('./policies/text/facebook.yaml') as file:
 
     # get a list of all the sentences
     sentences = all_sentences(tree, list())
+
+    # deemphasize the stopwords from each
+    sentences = map(lambda s: hide_stopwords(s), sentences)
 
     # generate an HTML report
     generate_report(sentences)
